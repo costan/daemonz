@@ -17,7 +17,7 @@ module Daemonz
   
   def self.disabled_without_cache!
     return true if config[:disabled]
-    return true if config[:disabled_in].include? Rails.root
+    return true if config[:disabled_in].include? Rails.env.to_s
     config[:disabled_for].any? do |suffix|
       suffix == $0[-suffix.length, suffix.length]
     end
