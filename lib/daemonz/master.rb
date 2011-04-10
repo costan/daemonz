@@ -39,21 +39,19 @@ module Daemonz
   
   # attempts to claim the master lock
   def self.claim_master
-    loop do
-      begin
-        # try to grab that lock
-        master_pid = grab_master_lock
-        if master_pid
-          logger.info "Daemonz in slave mode; PID #{master_pid} has master lock"
-          return false
-        else
-          logger.info "Daemonz grabbed master lock"
-          return true
-        end        
-      #rescue Exception => e
-      #  logger.warn "Daemonz mastering failed: #{e.class.name} - #{e}"
-      #  logger.info "Retrying daemonz mastering"
+    begin
+      # try to grab that lock
+      master_pid = grab_master_lock
+      if master_pid
+        logger.info "Daemonz in slave mode; PID #{master_pid} has master lock"
+        return false
+      else
+        logger.info "Daemonz grabbed master lock"
+        return true
       end
+    rescue Exception => e
+      logger.warn "Daemonz mastering failed: #{e.class.name} - #{e}"
+      return false
     end
   end
 end

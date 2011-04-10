@@ -19,7 +19,7 @@ module Daemonz
     if Daemonz.config[:is_master]
       Daemonz.configure_daemons
       Daemonz.start_daemons!
-    end    
+    end
   end
   
   # Complete shutdown used by rake:start and at Rails application exit.
