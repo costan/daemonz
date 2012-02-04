@@ -1,5 +1,3 @@
-require 'English'
-
 module Daemonz
   # Complex procedure for killing a process or a bunch of process replicas
   # kill_command is the script that's supposed to kill the process / processes (tried first)
@@ -17,9 +15,11 @@ module Daemonz
     end
     if options[:force_script] or !(pid_files.empty? or kill_script.nil?)
       logger.info "Issuing kill order: #{kill_script}\n" if options[:verbose]
-      success = Kernel.system kill_script unless kill_script.nil?
-      if !success and options[:verbose]
-        logger.warn "Kill order failed with exit code #{$CHILD_STATUS.exitstatus}"
+      unless kill_script.nil?
+        status = POSIX::Spawn::Child.new kill_script
+        if !status.success? and options[:verbose]
+          logger.warn "Kill order failed with exit code #{status.exitstatus}"
+        end
       end
 
       deadline_time = Time.now + (options[:script_delay] || 0.5)

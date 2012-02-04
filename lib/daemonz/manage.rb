@@ -1,4 +1,4 @@
-require 'English'
+require 'posix/spawn'
 
 module Daemonz
   # Starts daemons, yields, stops daemons. Intended for tests.
@@ -53,8 +53,9 @@ module Daemonz
                      :verbose => true, :force_script => false
       
     logger.info "Daemonz starting #{daemon[:name]}: #{daemon[:start][:cmdline]}"
-    success = Kernel.system daemon[:start][:cmdline]
-    unless success
+    status = POSIX::Spawn::Child.new daemon[:start][:cmdline]
+    
+    unless status.success?
       logger.warn "Daemonz start script for #{daemon[:name]} failed " +
                   "with code #{$CHILD_STATUS.exitstatus}"
     end

@@ -1,19 +1,41 @@
-require "rake"
- 
+require 'rubygems'
+require 'bundler'
 begin
-  require "jeweler"
-  Jeweler::Tasks.new do |gem|
-    gem.name = "daemonz"
-    gem.summary = "Automatically starts and stops the daemons in a Rails application"
-    gem.email = "victor@costan.us"
-    gem.homepage = "http://github.com/costan/daemonz"
-    gem.authors = ["Victor Costan"]
-    gem.files = Dir["*", "{lib}/**/*"]
-    gem.add_dependency 'simple-daemon'
-    gem.add_dependency 'zerg_support'
-  end
-  
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+  Bundler.setup(:default, :development)
+rescue Bundler::BundlerError => e
+  $stderr.puts e.message
+  $stderr.puts "Run `bundle install` to install missing gems"
+  exit e.status_code
+end
+
+require 'jeweler'
+Jeweler::Tasks.new do |gem|
+  gem.name = "daemonz"
+  gem.homepage = "http://github.com/costan/daemonz"
+  gem.license = "MIT"
+  gem.summary = %Q{User authentication for Rails 3 applications.}
+  gem.description = %Q{Works with Facebook.}
+  gem.email = "victor@costan.us"
+  gem.authors = ["Victor Costan"]
+  # Dependencies in Gemfile.
+end
+Jeweler::RubygemsDotOrgTasks.new
+
+require 'rake/testtask'
+Rake::TestTask.new(:test) do |test|
+  test.libs << 'lib' << 'test'
+  test.pattern = 'test/**/*_test.rb'
+  test.verbose = true
+end
+
+task :default => :test
+
+require 'rdoc/task'
+Rake::RDocTask.new do |rdoc|
+  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "authpwn_rails #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
 end
