@@ -16,9 +16,10 @@ module Daemonz
     if options[:force_script] or !(pid_files.empty? or kill_script.nil?)
       logger.info "Issuing kill order: #{kill_script}\n" if options[:verbose]
       unless kill_script.nil?
-        status = POSIX::Spawn::Child.new kill_script
-        if !status.success? and options[:verbose]
-          logger.warn "Kill order failed with exit code #{status.exitstatus}"
+        child = POSIX::Spawn::Child.new kill_script
+        if !child.success? and options[:verbose]
+          exit_code = child.status.exitstatus
+          logger.warn "Kill order failed with exit code #{exit_code}"
         end
       end
 
