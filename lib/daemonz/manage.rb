@@ -53,11 +53,12 @@ module Daemonz
                      :verbose => true, :force_script => false
       
     logger.info "Daemonz starting #{daemon[:name]}: #{daemon[:start][:cmdline]}"
-    status = POSIX::Spawn::Child.new daemon[:start][:cmdline]
+    child = POSIX::Spawn::Child.new daemon[:start][:cmdline]
     
-    unless status.success?
+    unless child.success?
+      exit_code = child.status.exitstatus
       logger.warn "Daemonz start script for #{daemon[:name]} failed " +
-                  "with code #{$CHILD_STATUS.exitstatus}"
+                  "with code #{exit_code}"
     end
   end
   
