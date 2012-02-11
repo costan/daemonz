@@ -8,7 +8,12 @@ module Daemonz
 class Railtie < Rails::Railtie
   initializer :control_daemon_processes do
     Daemonz.safe_start
-    at_exit { Daemonz.safe_stop unless Daemonz.keep_daemons_at_exit }
+    pid = Process.pid
+    at_exit do
+      if pid == Process.pid  # Otherwise we're a fork child.
+        Daemonz.safe_stop unless Daemonz.keep_daemons_at_exit
+      end
+    end
   end
 
   rake_tasks do
