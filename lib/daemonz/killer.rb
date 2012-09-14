@@ -2,7 +2,7 @@ module Daemonz
   # Complex procedure for killing a process or a bunch of process replicas
   # kill_command is the script that's supposed to kill the process / processes (tried first)
   # pid_patters are globs identifying PID files (a file can match any of the patterns)
-  # process_patterns are strings that should show on a command line (a process must match all)  
+  # process_patterns are strings that should show on a command line (a process must match all)
   # options:
   #   :verbose - log what gets killed
   #   :script_delay - the amount of seconds to sleep after launching the kill script
@@ -30,7 +30,7 @@ module Daemonz
         sleep 0.05
       end
     end
-    
+
     # Phase 2: look through PID files and issue kill orders
     pinfo = process_info()
     pid_files = pid_patterns.map { |pattern| Dir.glob(pattern) }.flatten
@@ -39,7 +39,7 @@ module Daemonz
         pid = File.open(fname, 'r') { |f| f.read.strip! }
         process_cmdline = pinfo[pid][:cmdline]
         # avoid killing innocent victims
-        if pinfo[pid].nil? or process_patterns.all? { |pattern| process_cmdline.index pattern } 
+        if pinfo[pid].nil? or process_patterns.all? { |pattern| process_cmdline.index pattern }
           logger.warn "Killing #{pid}: #{process_cmdline}" if options[:verbose]
           Process.kill 'TERM', pid.to_i
         end
@@ -53,7 +53,7 @@ module Daemonz
         # prevents crashing if the file is wiped after we call exists?
       end
     end
-    
+
     # Phase 3: look through the process table and kill anything that looks good
     pinfo = process_info()
     pinfo.each do |pid, info|

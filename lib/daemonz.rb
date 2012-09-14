@@ -1,5 +1,5 @@
 module Daemonz
-  
+
 end
 
 require 'daemonz/config.rb'

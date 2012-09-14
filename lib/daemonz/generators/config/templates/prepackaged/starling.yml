@@ -1,6 +1,6 @@
 # Daemonz example: configuration for running starling.
 #
-# daemonz starts the daemons according to the alphabetic order of their 
+# daemonz starts the daemons according to the alphabetic order of their
 # configuration file names. start_order can be used to override this order.
 # Daemons will be stopped in the reverse order of their starting order.
 #
@@ -12,7 +12,7 @@
 #                    configuration
 #   * PID files: if the daemon has .pid files, daemonz tries to read the file
 #                and find the corresponding processes, then tree-kills them
-#   * Process table: if possible, daemonz dumps the process table, looks for the 
+#   * Process table: if possible, daemonz dumps the process table, looks for the
 #                    processes that look like the daemon, and tree-kills them
 #   * Pattern matching: processes whose command lines have the same arguments as
 #                       those given to daemon "look like" that daemon

@@ -4,7 +4,7 @@ require 'yaml'
 module Daemonz
   class << self
     attr_reader :config
-    
+
     # Set by the rake tasks.
     attr_accessor :keep_daemons_at_exit
   end
@@ -14,7 +14,7 @@ module Daemonz
     return config[:cached_disabled] if config.has_key? :cached_disabled
     config[:cached_disabled] = disabled_without_cache!
   end
-  
+
   def self.disabled_without_cache!
     return true if config[:disabled]
     return true if config[:disabled_in].include? Rails.env.to_s
@@ -22,11 +22,11 @@ module Daemonz
       suffix == $0[-suffix.length, suffix.length]
     end
   end
-  
-  # figure out the plugin's configuration 
+
+  # figure out the plugin's configuration
   def self.configure(config_file, options = {})
     load_configuration config_file
-    
+
     config[:root_path] ||= Rails.root
     if options[:force_enabled]
       config[:disabled] = false
@@ -39,7 +39,7 @@ module Daemonz
     end
     config[:disabled] = false if config[:disabled] == 'false'
     config[:master_file] ||= Rails.root.join "tmp", "pids", "daemonz.master.pid"
-    
+
     config[:logger] &&= options[:override_logger]
     self.configure_logger
 
@@ -49,7 +49,7 @@ module Daemonz
       config[:is_master] = Daemonz.claim_master
     end
   end
-    
+
   # load and parse the config file
   def self.load_configuration(config_file)
     if File.exist? config_file
@@ -57,15 +57,16 @@ module Daemonz
       erb_result = ERB.new(file_contents).result
       @config = YAML.load erb_result
       @config[:daemons] ||= {}
-      
+
       config_dir = File.join(File.dirname(config_file), 'daemonz')
       if File.exist? config_dir
         Dir.entries(config_dir).each do |entry|
-          daemons_file = File.join(config_dir, entry) 
+          next unless entry =~ /^\w/  # Avoid temporary files.
+          daemons_file = File.join(config_dir, entry)
           next unless File.file? daemons_file
-          
+
           file_contents = File.read daemons_file
-          erb_result = ERB.new(file_contents).result          
+          erb_result = ERB.new(file_contents).result
           daemons = YAML.load erb_result
           daemons.keys.each do |daemon|
             if @config[:daemons].has_key? daemon
@@ -80,19 +81,19 @@ module Daemonz
       @config = { :disabled => true }
     end
   end
-  
+
   class << self
     attr_reader :daemons
   end
-  
+
   # process the daemon configuration
-  def self.configure_daemons    
+  def self.configure_daemons
     @daemons = []
     config[:daemons].each do |name, daemon_config|
       next if daemon_config[:disabled]
       daemon = { :name => name }
-            
-      # compute the daemon startup / stop commands 
+
+      # compute the daemon startup / stop commands
       ['start', 'stop'].each do |command|
         daemon_binary = daemon_config[:binary] || daemon_config["#{command}_binary".to_sym]
         if daemon_config[:absolute_binary]
@@ -108,7 +109,7 @@ module Daemonz
           logger.error "Daemonz ignoring #{name}; the #{command} file is missing"
           break
         end
-        
+
         unless daemon_config[:absolute_binary]
           begin
             binary_perms = File.stat(daemon_path).mode
@@ -121,16 +122,16 @@ module Daemonz
             logger.info e.backtrace.join("\n") + "\n"
           end
         end
-        
+
         daemon_args = daemon_config[:args] || daemon_config["#{command}_args".to_sym]
         daemon_cmdline = "#{daemon_path} #{daemon_args}"
         daemon[command.to_sym] = {:path => daemon_path, :cmdline => daemon_cmdline}
       end
       next unless daemon[:stop]
-      
+
       # kill patterns
       daemon[:kill_patterns] = daemon_config[:kill_patterns] || [daemon[:start][:path]]
-      
+
       # pass-through params
       daemon[:pids] = daemon_config[:pids]
       unless daemon[:pids]
@@ -139,10 +140,10 @@ module Daemonz
       end
       daemon[:delay_before_kill] = daemon_config[:delay_before_kill] || 0.2
       daemon[:start_order] = daemon_config[:start_order]
-      
+
       @daemons << daemon
     end
-    
+
     # sort by start_order, then by name
     @daemons.sort! do |a, b|
       if a[:start_order]

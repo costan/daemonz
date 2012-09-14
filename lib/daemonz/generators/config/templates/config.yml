@@ -1,7 +1,7 @@
 # Configuration file for the daemonz plugin.
 
 ---
-:daemons: 
+:daemons:
   # Daemon configurations placed here will be read as if they were in a file in
   # config/daemonz. This is more maintainable if you only have one daemon.
 
@@ -21,7 +21,7 @@
 
 # Daemons will not be started / stopped when the name of the binary that's
 # loading Rails ($0) is one of the following.
-:disabled_for: 
+:disabled_for:
 - 'rake'
 - 'script/generate'
 - 'script/destroy'
@@ -31,6 +31,6 @@
 # rake daemons:start / rake daemons:stop, or you can remove the line below.
 - 'irb'
 
-# Daemons will not be started for the following environments. 
+# Daemons will not be started for the following environments.
 :disabled_in:
 - 'test'

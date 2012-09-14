@@ -28,7 +28,7 @@ begin
   if Sys::ProcTable::VERSION == '0.7.6'
     raise LoadError, 'Buggy sys/proctable, emulate'
   end
-  
+
   module Daemonz::ProcTable
     def self.ps
       # We don't use ps_emulation all the time because sys-proctable is
@@ -42,7 +42,7 @@ begin
   end
 rescue LoadError
   # The accelerated version is not available, use the slow version all the time.
-  
+
   module Daemonz::ProcTable
     def self.ps
       self.ps_emulation
@@ -50,11 +50,11 @@ rescue LoadError
   end
 end
 
-module Daemonz 
+module Daemonz
   # returns information about a process or all the running processes
   def self.process_info(pid = nil)
     info = Hash.new
-    
+
     Daemonz::ProcTable.ps.each do |process|
       item = { :cmdline => process.cmdline, :pid => process.pid.to_s }
 
@@ -64,7 +64,7 @@ module Daemonz
         return item if item[:pid].to_s == pid.to_s
       end
     end
-    
+
     if pid.nil?
       return info
     else

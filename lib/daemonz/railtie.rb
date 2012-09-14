@@ -17,9 +17,9 @@ class Railtie < Rails::Railtie
   end
 
   rake_tasks do
-    load 'daemonz/tasks/daemonz_tasks.rake'    
+    load 'daemonz/tasks/daemonz_tasks.rake'
   end
-  
+
   generators do
     require 'daemonz/generators/config/config_generator.rb'
     require 'daemonz/generators/daemon/daemon_generator.rb'

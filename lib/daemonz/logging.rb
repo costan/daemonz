@@ -1,10 +1,10 @@
 module Daemonz
   @logger = Rails.logger
-  
+
   def self.logger
     @logger || Rails.logger
   end
-  
+
   def self.configure_logger
     case config[:logger]
     when 'stdout'
@@ -16,7 +16,7 @@ module Daemonz
     when 'rails'
       @logger = Rails.logger
     else
-      @logger = Rails.logger   
+      @logger = Rails.logger
     end
   end
 end
