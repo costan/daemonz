@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "daemonz"
-  s.version = "0.3.7"
+  s.version = "0.3.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Victor Costan"]
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
     "lib/daemonz/config.rb",
     "lib/daemonz/generators/config/config_generator.rb",
     "lib/daemonz/generators/config/templates/config.yml",
+    "lib/daemonz/generators/config/templates/prepackaged/delayed_job.yml",
     "lib/daemonz/generators/config/templates/prepackaged/ferret.yml",
     "lib/daemonz/generators/config/templates/prepackaged/starling.yml",
     "lib/daemonz/generators/daemon/daemon_generator.rb",
