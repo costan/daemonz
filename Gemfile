@@ -3,6 +3,7 @@ source :rubygems
 gem 'posix-spawn', '>= 0.3.6'
 gem 'simple-daemon', '>= 0.1.2'
 gem 'rails', '>= 3.2.8'
+gem 'sys-proctable', '>= 0.9.1'
 gem 'zerg_support', '>= 0.1.5'
 
 group :development do

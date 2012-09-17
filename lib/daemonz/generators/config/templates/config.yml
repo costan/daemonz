@@ -10,10 +10,15 @@
 :root_path: <%= Rails.root %>
 
 # Where daemonz should log - set to stdout, stderr, or rails.
-:logger: stdout
+:logger: rails
 
-# Set to true to completely disable daemonz, and not load any plugins.
+# Set to true to completely disable daemonz, and not load any daemon.
 :disabled: false
+
+# Set to true to have the daemons started on a separate thread, so they don't
+# block the server start-up process. Set to false if your application
+# communicates with the daemons directly, e.g. via DRb.
+:async_start: true
 
 # daemonz is loaded every time the Rails framework is loaded. Sometimes
 # (e.g. when performing migrations) daemons aren't required, so we shouldn't

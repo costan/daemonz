@@ -38,7 +38,22 @@ module Daemonz
   end
 
   def self.start_daemons!
-    @daemons.each { |daemon| start_daemon! daemon }
+    if Daemonz.config[:async_start]
+      Thread.new { start_daemons_sync }
+    else
+      start_daemons_sync
+    end
+  end
+
+  def self.start_daemons_sync
+    begin
+      @daemons.each { |daemon| start_daemon! daemon }
+    rescue Exception => e
+      logger.warn "Daemonz startup process failed. #{e.class}: #{e}\n" +
+                  e.backtrace.join("\n")
+    ensure
+      logger.flush
+    end
   end
 
   def self.stop_daemons!
@@ -46,6 +61,7 @@ module Daemonz
   end
 
   def self.start_daemon!(daemon)
+    logger.info "Daemonz killing any old instances of #{daemon[:name]}"
     # cleanup before we start
     kill_process_set daemon[:stop][:cmdline], daemon[:pids],
                      daemon[:kill_patterns],
